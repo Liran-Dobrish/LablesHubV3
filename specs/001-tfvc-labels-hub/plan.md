@@ -38,7 +38,7 @@ An Azure DevOps web extension contributing two hub pages for browsing TFVC label
 |---|---|
 | I. Code Quality | PASS — TypeScript strict mode + ESLint enforced in build; single-responsibility modules (`services/`, `components/`, `hubs/`) planned in Project Structure below; no dead code/commented blocks to be introduced. |
 | II. Testing Standards | PASS — Jest + React Testing Library unit tests planned for filter logic (name + description matching) and tree/content sync (see research.md §6, quickstart.md "Automated checks"); mocked data-access seam (contracts/tfvc-labels-client.md) keeps tests deterministic and independent of network/order. |
-| III. User Experience Consistency | PASS — Exclusive use of `azure-devops-ui` components (research.md §2) ensures visual/interaction consistency with the ADO host; error/empty states standardized per FR-013/FR-014. |
+| III. User Experience Consistency | PASS — Exclusive use of `azure-devops-ui` components (research.md §2) ensures visual/interaction consistency with the ADO host; error/empty states standardized per FR-013/FR-014; accessibility (keyboard/ARIA) and localization-readiness explicitly verified in tasks.md T035. |
 | IV. Performance Requirements | PASS — Explicit targets captured above (SC-004, folder virtualization); no unbounded loops or N+1 patterns expected since label/item fetches are paged REST calls. |
 
 No violations identified; Complexity Tracking table below is not needed.
