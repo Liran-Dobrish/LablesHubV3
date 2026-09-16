@@ -19,7 +19,7 @@ Represents a named snapshot of TFVC paths at a point in time; the primary row en
 
 **Validation rules**:
 - `name` is required and non-empty (source of truth: Azure DevOps; extension treats it as read-only).
-- `description` edits (extension-local overlay, see research.md §3) are limited to a reasonable max length (e.g., 2000 characters) to avoid unbounded storage in the Extension Data Service.
+- `description` is read-only in this release (editing is out of scope per spec.md Clarifications); no client-side mutation of this field is supported.
 
 ## LabelCreator
 
@@ -61,9 +61,8 @@ Represents a file or folder listed directly under a selected `LabelFolderNode` (
 ## View/state entities (not persisted beyond the session)
 
 - **LabelListFilterState**: `{ searchText: string; creatorId: string | null }` — drives the derived, filtered view of the loaded `TfvcLabel[]` on the main page.
-- **LabelDetailsState**: `{ label: TfvcLabel; isEditingDescription: boolean; pendingDescription: string; selectedFolderPath: string }` — drives the details page's description editor and tree/content synchronization.
+- **LabelDetailsState**: `{ label: TfvcLabel; selectedFolderPath: string }` — drives the details page's tree/content synchronization.
 
 ## State transitions
 
-- **Description edit**: `read` → (user activates edit) → `editing` → (save) → `read` with updated `description`, or (cancel) → `read` with original `description` restored.
 - **Folder selection**: `selectedFolderPath` changes on tree node click → triggers a re-fetch/re-derivation of the `LabelItem[]` for the right-hand panel; previous panel content is replaced, not merged.
