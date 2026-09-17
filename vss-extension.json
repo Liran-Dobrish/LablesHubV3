@@ -11,7 +11,7 @@
     { "id": "Microsoft.VisualStudio.Services" }
   ],
   "icons": {
-    "default": "static/images/extension-icon.png"
+    "default": "static/images/icon.png"
   },
   "files": [
     { "path": "dist/label-list", "addressable": true },
