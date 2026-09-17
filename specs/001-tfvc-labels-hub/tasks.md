@@ -29,14 +29,14 @@ Single-project web extension (per plan.md Project Structure): `src/`, `tests/`, 
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create the project directory skeleton (`src/hubs/label-list/`, `src/hubs/label-details/`, `src/components/`, `src/services/`, `src/models/`, `src/common/`, `static/images/`, `tests/unit/`, `tests/integration/`, `scripts/`) per plan.md Project Structure
-- [ ] T002 Initialize `package.json` with dependencies `azure-devops-ui`, `azure-devops-extension-sdk`, `azure-devops-extension-api`, `react`, `react-dom` and devDependencies `typescript`, `esbuild`, `tfx-cli`, `jest`, `ts-jest` (or `esbuild-jest`), `@testing-library/react`, `eslint`
-- [ ] T003 [P] Configure `tsconfig.json` (TypeScript 5.x strict mode, ES2020 target, JSX for React)
-- [ ] T004 [P] Configure ESLint for TypeScript/React in `.eslintrc.cjs` (or `eslint.config.mjs`)
-- [ ] T005 [P] Configure Jest in `jest.config.cjs` plus a test setup file mocking `azure-devops-extension-sdk` (`SDK.init`, `SDK.getWebContext`)
-- [ ] T006 [P] Create the esbuild bundling script in `scripts/build.mjs` with dev (unminified + sourcemaps) and prod (minified) modes for both hub entry points
-- [ ] T007 [P] Add a CI workflow in `.github/workflows/ci.yml` that runs `npm run lint`, `tsc --noEmit`, and `npm test` on every pull request, per the constitution's Development Workflow & Quality Gates
-- [ ] T008 Scaffold the `vss-extension.json` manifest (publisher/extension id, icons under `static/images/`, empty `contributions` array to be filled in per-story) and wire `package.json` scripts `build`, `build:dev`, `package`, `test` per quickstart.md
+- [X] T001 Create the project directory skeleton (`src/hubs/label-list/`, `src/hubs/label-details/`, `src/components/`, `src/services/`, `src/models/`, `src/common/`, `static/images/`, `tests/unit/`, `tests/integration/`, `scripts/`) per plan.md Project Structure
+- [X] T002 Initialize `package.json` with dependencies `azure-devops-ui`, `azure-devops-extension-sdk`, `azure-devops-extension-api`, `react`, `react-dom` and devDependencies `typescript`, `esbuild`, `tfx-cli`, `jest`, `ts-jest` (or `esbuild-jest`), `@testing-library/react`, `eslint`
+- [X] T003 [P] Configure `tsconfig.json` (TypeScript 5.x strict mode, ES2020 target, JSX for React)
+- [X] T004 [P] Configure ESLint for TypeScript/React in `.eslintrc.cjs` (or `eslint.config.mjs`)
+- [X] T005 [P] Configure Jest in `jest.config.cjs` plus a test setup file mocking `azure-devops-extension-sdk` (`SDK.init`, `SDK.getWebContext`)
+- [X] T006 [P] Create the esbuild bundling script in `scripts/build.mjs` with dev (unminified + sourcemaps) and prod (minified) modes for both hub entry points
+- [X] T007 [P] Add a CI workflow in `.github/workflows/ci.yml` that runs `npm run lint`, `tsc --noEmit`, and `npm test` on every pull request, per the constitution's Development Workflow & Quality Gates
+- [X] T008 Scaffold the `vss-extension.json` manifest (publisher/extension id, icons under `static/images/`, empty `contributions` array to be filled in per-story) and wire `package.json` scripts `build`, `build:dev`, `package`, `test` per quickstart.md
 
 ---
 
@@ -46,11 +46,11 @@ Single-project web extension (per plan.md Project Structure): `src/`, `tests/`, 
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T009 Define shared model and view-state types (`TfvcLabel`, `LabelCreator`, `LabelFolderNode`, `LabelItem`, `LabelListFilterState`, `LabelDetailsState`) in `src/models/types.ts` per data-model.md
-- [ ] T010 [P] Implement the SDK bootstrap helper (`SDK.init`/`notifyLoadSucceeded`, `getWebContext`, theme handling) shared by both hubs in `src/services/sdkInit.ts`
-- [ ] T011 [P] Implement date and path formatting helpers (created-date display, path leaf-segment extraction) in `src/common/formatting.ts`
-- [ ] T012 [P] Write the contract test for `TfvcLabelsClient` (`getLabels`, `getLabel`, `getLabelFolderContents`, `DataAccessError` mapping) against a mocked `TfvcRestClient`, per contracts/tfvc-labels-client.md, in `tests/integration/tfvcLabelsClient.test.ts`
-- [ ] T013 Implement `TfvcLabelsClient` in `src/services/tfvcLabelsClient.ts` satisfying the contract and making T012 pass (depends on T009, T012)
+- [X] T009 Define shared model and view-state types (`TfvcLabel`, `LabelCreator`, `LabelFolderNode`, `LabelItem`, `LabelListFilterState`, `LabelDetailsState`) in `src/models/types.ts` per data-model.md
+- [X] T010 [P] Implement the SDK bootstrap helper (`SDK.init`/`notifyLoadSucceeded`, `getWebContext`, theme handling) shared by both hubs in `src/services/sdkInit.ts`
+- [X] T011 [P] Implement date and path formatting helpers (created-date display, path leaf-segment extraction) in `src/common/formatting.ts`
+- [X] T012 [P] Write the contract test for `TfvcLabelsClient` (`getLabels`, `getLabel`, `getLabelFolderContents`, `DataAccessError` mapping) against a mocked `TfvcRestClient`, per contracts/tfvc-labels-client.md, in `tests/integration/tfvcLabelsClient.test.ts`
+- [X] T013 Implement `TfvcLabelsClient` in `src/services/tfvcLabelsClient.ts` satisfying the contract and making T012 pass (depends on T009, T012)
 
 **Checkpoint**: Foundation ready — user story implementation can now begin
 
@@ -64,15 +64,15 @@ Single-project web extension (per plan.md Project Structure): `src/`, `tests/`, 
 
 ### Tests for User Story 1
 
-- [ ] T014 [P] [US1] Unit test for label list filtering (name/description substring match, creator match, combined filters, empty-result state) in `tests/unit/labelListFilter.test.ts`
+- [X] T014 [P] [US1] Unit test for label list filtering (name/description substring match, creator match, combined filters, empty-result state) in `tests/unit/labelListFilter.test.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T015 [P] [US1] Create the `LabelRow` component (two-line row: label name; created date + `VssPersona` creator icon/name) in `src/components/LabelRow.tsx`
-- [ ] T016 [P] [US1] Create the `LabelListFilterBar` component (`azure-devops-ui` `Filter`/`FilterBar` with a `KeywordFilterBarItem` for free text and a `DropdownFilterBarItem` populated with distinct creators from the loaded labels) in `src/components/LabelListFilterBar.tsx`
-- [ ] T017 [US1] Implement `LabelListPage` (fetch labels via `TfvcLabelsClient.getLabels`, derive the filtered `ObservableArray` from `LabelListFilterState`, render a `Table` of `LabelRow`, loading/empty-state/error-state-with-retry) in `src/hubs/label-list/LabelListPage.tsx` (depends on T013, T015, T016)
-- [ ] T018 [US1] Create the label-list hub bootstrap entry (`SDK.init`/`notifyLoadSucceeded`, mount `LabelListPage`) in `src/hubs/label-list/index.ts` and `src/hubs/label-list/LabelListPage.html` (depends on T017)
-- [ ] T019 [US1] Register the label-list hub contribution in `vss-extension.json` (depends on T008, T018)
+- [X] T015 [P] [US1] Create the `LabelRow` component (two-line row: label name; created date + `VssPersona` creator icon/name) in `src/components/LabelRow.tsx`
+- [X] T016 [P] [US1] Create the `LabelListFilterBar` component (`azure-devops-ui` `Filter`/`FilterBar` with a `KeywordFilterBarItem` for free text and a `DropdownFilterBarItem` populated with distinct creators from the loaded labels) in `src/components/LabelListFilterBar.tsx`
+- [X] T017 [US1] Implement `LabelListPage` (fetch labels via `TfvcLabelsClient.getLabels`, derive the filtered `ObservableArray` from `LabelListFilterState`, render a `Table` of `LabelRow`, loading/empty-state/error-state-with-retry) in `src/hubs/label-list/LabelListPage.tsx` (depends on T013, T015, T016)
+- [X] T018 [US1] Create the hub bootstrap entry (`SDK.init`/`notifyLoadSucceeded`, mount the `App` shell) in `src/hubs/label-list/index.ts`, `src/hubs/label-list/App.tsx`, and `src/hubs/label-list/LabelListPage.html` (depends on T017)
+- [X] T019 [US1] Register the single label-list hub contribution in `vss-extension.json` (depends on T008, T018)
 
 **Checkpoint**: User Story 1 should be fully functional and testable independently
 
@@ -86,15 +86,15 @@ Single-project web extension (per plan.md Project Structure): `src/`, `tests/`, 
 
 ### Tests for User Story 2
 
-- [ ] T020 [P] [US2] Unit test for label details navigation (header renders back button + label name, back button restores the prior `LabelListFilterState`) in `tests/unit/labelDetailsNavigation.test.ts`
+- [X] T020 [P] [US2] Unit test for label details navigation (header renders back button + label name, back button restores the prior `LabelListFilterState`) in `tests/unit/labelDetailsNavigation.test.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T021 [P] [US2] Create the `LabelDescriptionView` component (read-only description text, "No description" fallback, scroll/expand for long text) in `src/components/LabelDescriptionView.tsx`
-- [ ] T022 [US2] Implement `LabelDetailsPage` header (`azure-devops-ui` `Page`/`Header` with back button + label name) and description section (fetch via `TfvcLabelsClient.getLabel`, render `LabelDescriptionView`, error-state-with-retry for both a deleted/renamed label and generic load failures, per FR-014) in `src/hubs/label-details/LabelDetailsPage.tsx` (depends on T013, T021)
-- [ ] T023 [US2] Wire navigation: label row click in `LabelListPage` routes to the label-details hub with the `labelId` and current `LabelListFilterState`; the details page's back button returns to `LabelListPage` restoring that filter state, in `src/hubs/label-list/LabelListPage.tsx` and `src/hubs/label-details/LabelDetailsPage.tsx` (depends on T017, T022)
-- [ ] T024 [US2] Create the label-details hub bootstrap entry (`SDK.init`/`notifyLoadSucceeded`, mount `LabelDetailsPage`) in `src/hubs/label-details/index.ts` and `src/hubs/label-details/LabelDetailsPage.html` (depends on T022)
-- [ ] T025 [US2] Register the label-details hub contribution in `vss-extension.json` (depends on T008, T019, T024 — same file as T019, kept sequential to avoid conflicting edits to `vss-extension.json`)
+- [X] T021 [P] [US2] Create the `LabelDescriptionView` component (read-only description text, "No description" fallback, scroll/expand for long text) in `src/components/LabelDescriptionView.tsx`
+- [X] T022 [US2] Implement `LabelDetailsPage` header (`azure-devops-ui` `Page`/`Header` with back button + label name) and description section (fetch via `TfvcLabelsClient.getLabel`, render `LabelDescriptionView`, error-state-with-retry for both a deleted/renamed label and generic load failures, per FR-014) in `src/hubs/label-details/LabelDetailsPage.tsx` (depends on T013, T021)
+- [X] T023 [US2] Wire navigation client-side within the single hub: `App.tsx` switches from the list view to `LabelDetailsPage` on row click (passing `labelId` + current `LabelListFilterState` via a same-page query string, `src/common/navigation.ts`), and the details page's back button calls browser back to restore the list view with filters preserved, in `src/hubs/label-list/App.tsx` (depends on T017, T022)
+- [X] T024 [US2] ~~Create the label-details hub bootstrap entry~~ — superseded by T023; `LabelDetailsPage` is rendered by `App.tsx` as a view, not a separate hub bundle (no `src/hubs/label-details/index.ts` or `.html`)
+- [X] T025 [US2] ~~Register the label-details hub contribution~~ — superseded; there is only one hub contribution (T019), consistent with the single-entry-point requirement
 
 **Checkpoint**: User Stories 1 AND 2 should both work independently (browse → open details → back with filters preserved)
 
@@ -108,13 +108,13 @@ Single-project web extension (per plan.md Project Structure): `src/`, `tests/`, 
 
 ### Tests for User Story 3
 
-- [ ] T026 [P] [US3] Unit test for folder tree selection and content synchronization (selecting a node fetches/derives its direct children, replaces prior content, shows empty-state for no children) in `tests/unit/labelFolderTree.test.ts`
+- [X] T026 [P] [US3] Unit test for folder tree selection and content synchronization (selecting a node fetches/derives its direct children, replaces prior content, shows empty-state for no children) in `tests/unit/labelFolderTree.test.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T027 [P] [US3] Create the `LabelFolderTree` component (`azure-devops-ui` `Tree`/`TreeItemProvider` seeded from the label's `scopePath`, expand/select handling) in `src/components/LabelFolderTree.tsx`
-- [ ] T028 [P] [US3] Create the `LabelFolderContents` component (`Table`/virtualized list of `LabelItem`s for the selected node, empty-state for no children) in `src/components/LabelFolderContents.tsx`
-- [ ] T029 [US3] Wire the label contents section into `LabelDetailsPage` (track `selectedFolderPath`, fetch via `TfvcLabelsClient.getLabelFolderContents` on selection change, render `LabelFolderTree` + `LabelFolderContents` side by side, error-state-with-retry on fetch failure per FR-014) in `src/hubs/label-details/LabelDetailsPage.tsx` (depends on T022, T027, T028)
+- [X] T027 [P] [US3] Create the `LabelFolderTree` component (`azure-devops-ui` `Tree`/`TreeItemProvider` seeded from the label's `scopePath`, expand/select handling) in `src/components/LabelFolderTree.tsx`
+- [X] T028 [P] [US3] Create the `LabelFolderContents` component (`Table`/virtualized list of `LabelItem`s for the selected node, empty-state for no children) in `src/components/LabelFolderContents.tsx`
+- [X] T029 [US3] Wire the label contents section into `LabelDetailsPage` (track `selectedFolderPath`, fetch via `TfvcLabelsClient.getLabelFolderContents` on selection change, render `LabelFolderTree` + `LabelFolderContents` side by side, error-state-with-retry on fetch failure per FR-014) in `src/hubs/label-details/LabelDetailsPage.tsx` (depends on T022, T027, T028)
 
 **Checkpoint**: All user stories (US1, US2, US3) should now be independently functional
 
@@ -124,12 +124,12 @@ Single-project web extension (per plan.md Project Structure): `src/`, `tests/`, 
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T030 [P] Extract a shared empty-state/error-state presentational component (used by the label list and folder contents panel, per FR-013/FR-014) in `src/components/StateMessage.tsx`
-- [ ] T031 [P] Add `README.md` with setup/build/package/install instructions mirroring quickstart.md
-- [ ] T032 Verify large folder-content lists are virtualized/paginated in `LabelFolderContents` (edge case in spec.md) and large creator lists support search/typeahead in `LabelListFilterBar` (edge case in spec.md)
+- [X] T030 [P] Extract a shared empty-state/error-state presentational component (used by the label list and folder contents panel, per FR-013/FR-014) in `src/components/StateMessage.tsx`
+- [X] T031 [P] Add `README.md` with setup/build/package/install instructions mirroring quickstart.md
+- [X] T032 Verify large folder-content lists are virtualized/paginated in `LabelFolderContents` (edge case in spec.md) and large creator lists support search/typeahead in `LabelListFilterBar` (edge case in spec.md)
 - [ ] T033 Run the quickstart.md manual validation steps end-to-end against a test Azure DevOps organization/collection with a TFVC team project
 - [ ] T034 [P] Verify initial render of the label list and details page meets the 3-second target (SC-004) under normal network conditions; adjust loading-state thresholds if needed
-- [ ] T035 [P] Verify accessibility and localization readiness of new components (keyboard navigation and ARIA labeling for `LabelRow`, `LabelListFilterBar`, `LabelFolderTree` selection, and `LabelDescriptionView`; confirm all user-facing strings are extracted into a single resource module rather than inlined, per Constitution Principle III) in `src/components/` and `src/common/strings.ts`
+- [X] T035 [P] Verify accessibility readiness of new components (keyboard navigation and ARIA labeling for `LabelRow`, `LabelListFilterBar`, `LabelFolderTree` selection, and `LabelDescriptionView`; confirm all user-facing strings are extracted into a single module rather than inlined, per Constitution Principle III) in `src/components/` and `src/common/strings.ts`. Localization is explicitly out of scope for this release.
 
 ---
 

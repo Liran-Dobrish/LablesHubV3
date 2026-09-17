@@ -1,0 +1,26 @@
+// Centralized user-facing strings — keeps text out of components (accessibility labels included).
+// Localization is explicitly out of scope for this release.
+export const strings = {
+  labelListPageTitle: 'TFVC Labels',
+  labelListSearchPlaceholder: 'Search by name or description',
+  labelListCreatorPlaceholder: 'Creator',
+  labelListNoCreators: 'No creators',
+  labelListLoading: 'Loading labels…',
+  labelListLoadErrorTitle: 'Unable to load labels',
+  labelListEmptyNoLabels: 'No labels exist for this team project',
+  labelListEmptyNoMatches: 'No labels match your filters',
+  labelDetailsFallbackTitle: 'Label details',
+  labelDetailsBackButton: 'Back',
+  labelDetailsBackAriaLabel: 'Back to labels',
+  labelDetailsLoading: 'Loading label…',
+  labelDetailsNotFoundTitle: 'This label is no longer available',
+  labelDetailsLoadErrorTitle: 'Unable to load this label',
+  labelDescriptionEmpty: 'No description',
+  folderTreeAriaLabel: 'Label folder tree',
+  folderTreeExpand: 'Expand',
+  folderTreeCollapse: 'Collapse',
+  folderContentsAriaLabel: 'Folder contents',
+  folderContentsLoadErrorTitle: 'Unable to load folder contents',
+  folderContentsEmpty: 'This folder has no files or sub-folders',
+  retryActionText: 'Retry',
+} as const;

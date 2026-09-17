@@ -1,0 +1,33 @@
+{
+  "manifestVersion": 1,
+  "id": "tfvc-labels-hub",
+  "publisher": "REPLACE_WITH_PUBLISHER_ID",
+  "version": "0.1.1",
+  "name": "TFVC Labels Hub",
+  "description": "Browse and inspect TFVC labels for a team project.",
+  "public": false,
+  "categories": ["Azure Repos"],
+  "targets": [
+    { "id": "Microsoft.VisualStudio.Services" }
+  ],
+  "icons": {
+    "default": "static/images/extension-icon.png"
+  },
+  "files": [
+    { "path": "dist/label-list", "addressable": true },
+    { "path": "static/images", "addressable": true }
+  ],
+  "contributions": [
+    {
+      "id": "tfvc-label-list-hub",
+      "type": "ms.vss-web.hub",
+      "description": "TFVC labels list and details for the current team project",
+      "targets": ["ms.vss-code-web.code-hub-group"],
+      "properties": {
+        "name": "TFVC Labels",
+        "order": 100,
+        "uri": "dist/label-list/index.html"
+      }
+    }
+  ]
+}
