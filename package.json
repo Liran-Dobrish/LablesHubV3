@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node scripts/build.mjs --mode=production",
     "build:dev": "node scripts/build.mjs --mode=development",
-    "package": "npm run build && npx tfx-cli extension create --manifest-globs vss-extension.json --output-path dist",
+    "package": "npm run build && npx tfx-cli extension create --manifest-globs vss-extension.json --rev-version --output-path dist",
     "test": "jest",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit"
