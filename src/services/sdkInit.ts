@@ -2,7 +2,7 @@
 import * as SDK from 'azure-devops-extension-sdk';
 
 export async function initializeSdk(): Promise<void> {
-  await SDK.init({ loaded: false });
+  await SDK.init();
 }
 
 export async function notifyLoaded(): Promise<void> {

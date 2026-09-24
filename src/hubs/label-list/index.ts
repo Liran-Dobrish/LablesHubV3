@@ -10,7 +10,7 @@ async function main(): Promise<void> {
   const container = document.getElementById('root');
   ReactDOM.render(React.createElement(App), container);
 
-  await notifyLoaded();
+  //await notifyLoaded();
 }
 
 main().catch((error) => {
