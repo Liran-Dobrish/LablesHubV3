@@ -1,7 +1,7 @@
 // Hub bootstrap: SDK handshake + mount the App shell — the single registered hub (label-list is the entry point).
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { initializeSdk, notifyLoaded } from '../../services/sdkInit';
+import { initializeSdk } from '../../services/sdkInit';
 import { App } from './App';
 
 async function main(): Promise<void> {
