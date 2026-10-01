@@ -17,6 +17,7 @@ export const strings = {
   labelDetailsLoadErrorTitle: 'Unable to load this label',
   labelDescriptionEmpty: 'No description',
   folderTreeAriaLabel: 'Label folder tree',
+  folderTreePanelTitle: 'Files',
   folderTreeExpand: 'Expand',
   folderTreeCollapse: 'Collapse',
   folderTreeLoading: 'Loading…',

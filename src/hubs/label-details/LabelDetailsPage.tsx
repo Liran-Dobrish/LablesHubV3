@@ -4,6 +4,7 @@ import { Page } from 'azure-devops-ui/Page';
 import { Header, TitleSize } from 'azure-devops-ui/Header';
 import { Button } from 'azure-devops-ui/Button';
 import { Spinner, SpinnerSize } from 'azure-devops-ui/Spinner';
+import { SingleLayerMasterPanel, SingleLayerMasterPanelHeader } from 'azure-devops-ui/MasterDetails';
 import { tfvcLabelsClient } from '../../services/tfvcLabelsClient';
 import type { DataAccessError, TfvcLabel } from '../../models/types';
 import { LabelDescriptionView } from '../../components/LabelDescriptionView';
@@ -77,9 +78,13 @@ export const LabelDetailsPage: React.FC<LabelDetailsPageProps> = ({ labelId, onB
             <LabelDescriptionView description={label.description} />
           </section>
           <section className="tfvc-label-contents-section flex-row">
-            <div className="tfvc-label-folder-tree-pane">
-              <LabelFolderTree label={label} selectedPath={selectedFolderPath} onSelectNode={setSelectedFolderPath} />
-            </div>
+            <SingleLayerMasterPanel
+              className="tfvc-label-folder-tree-pane"
+              renderHeader={() => <SingleLayerMasterPanelHeader title={strings.folderTreePanelTitle} />}
+              renderContent={() => (
+                <LabelFolderTree label={label} selectedPath={selectedFolderPath} onSelectNode={setSelectedFolderPath} />
+              )}
+            />
             <div className="tfvc-label-folder-contents-pane flex-grow">
               {selectedFolderPath && <LabelFolderContents labelId={label.id} folderPath={selectedFolderPath} />}
             </div>
