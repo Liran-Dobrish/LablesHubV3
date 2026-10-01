@@ -29,6 +29,10 @@ export interface LabelItem {
   path: string;
   name: string;
   type: LabelItemType;
+  /** Changeset version the item was last changed at. */
+  changeset: number;
+  /** ISO date string for when the changeset above was checked in. */
+  checkedInDate: string;
 }
 
 export interface LabelListFilterState {

@@ -57,6 +57,8 @@ function mapItem(item: TfvcItem): LabelItem {
     path,
     name: leafSegment(path),
     type: item.isFolder ? 'folder' : 'file',
+    changeset: item.version ?? 0,
+    checkedInDate: item.changeDate ? new Date(item.changeDate).toISOString() : '',
   };
 }
 

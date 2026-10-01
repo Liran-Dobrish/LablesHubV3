@@ -2,8 +2,20 @@
 import { applyLoadedItems, selectFolder } from '../../src/hubs/label-details/folderContentsState';
 import type { LabelItem } from '../../src/models/types';
 
-const fileA: LabelItem = { path: '$/Proj/Folder/A.txt', name: 'A.txt', type: 'file' };
-const fileB: LabelItem = { path: '$/Proj/Other/B.txt', name: 'B.txt', type: 'file' };
+const fileA: LabelItem = {
+  path: '$/Proj/Folder/A.txt',
+  name: 'A.txt',
+  type: 'file',
+  changeset: 10,
+  checkedInDate: '2026-01-01T00:00:00.000Z',
+};
+const fileB: LabelItem = {
+  path: '$/Proj/Other/B.txt',
+  name: 'B.txt',
+  type: 'file',
+  changeset: 11,
+  checkedInDate: '2026-01-02T00:00:00.000Z',
+};
 
 describe('folder contents selection state', () => {
   it('selecting a node clears previous items while the new fetch is pending', () => {

@@ -23,6 +23,10 @@ export const strings = {
   folderTreeLoading: 'Loading…',
   folderContentsAriaLabel: 'Folder contents',
   folderContentsLoadErrorTitle: 'Unable to load folder contents',
+  folderContentsNameColumn: 'Name',
+  folderContentsChangesetColumn: 'Changeset',
+  folderContentsCheckedInDateColumn: 'Check-in date',
+  folderContentsAdditionalColumn: 'Additional',
   folderContentsEmpty: 'This folder has no files or sub-folders',
   retryActionText: 'Retry',
 } as const;
