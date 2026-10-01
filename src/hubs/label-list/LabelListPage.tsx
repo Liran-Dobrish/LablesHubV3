@@ -11,7 +11,7 @@ import { LabelListFilterBar } from '../../components/LabelListFilterBar';
 import { LabelRow } from '../../components/LabelRow';
 import { StateMessage } from '../../components/StateMessage';
 import { strings } from '../../common/strings';
-import { ListSelection, renderListItem, ScrollableList } from 'azure-devops-ui/List';
+import { renderListItem, ScrollableList } from 'azure-devops-ui/List';
 import type { IListItemDetails, IListRow } from 'azure-devops-ui/List';
 import { ArrayItemProvider } from 'azure-devops-ui/Utilities/Provider';
 
@@ -52,7 +52,6 @@ export const LabelListPage: React.FC<LabelListPageProps> = ({ onOpenLabel, initi
   const creators = React.useMemo(() => getDistinctCreators(labels), [labels]);
   const visibleLabels = React.useMemo(() => filterLabels(labels, filterState), [labels, filterState]);
   const labelItemProvider = React.useMemo(() => new ArrayItemProvider(visibleLabels), [visibleLabels]);
-  const itemSelection = new ListSelection(true);
 
   const handleFilterChanged = React.useCallback((searchText: string, creatorId: string | null) => {
     setFilterState({ searchText, creatorId });
@@ -96,32 +95,14 @@ export const LabelListPage: React.FC<LabelListPageProps> = ({ onOpenLabel, initi
           )}
 
           {loadState === 'loaded' && visibleLabels.length > 0 && (
-            <div className="tfvc-label-list" role="table" aria-label="TFVC labels">
-              {/* {visibleLabels.map((label) => (
-                <div
-                  key={label.id}
-                  role="row"
-                  tabIndex={0}
-                  className="tfvc-label-list-row bolt-list-row"
-                  onClick={() => onOpenLabel(label.id, filterState)}
-                  onKeyPress={(event) => {
-                    if (event.key === 'Enter') {
-                      onOpenLabel(label.id, filterState);
-                    }
-                  }}
-                >
-                  <LabelRow label={label} />
-                </div>
-              ))} */}
-              <ScrollableList
-                itemProvider={labelItemProvider}
-                renderRow={renderLabelRow}
-                selection={itemSelection}
-                onActivate={handleLabelActivated}
-                selectRowOnClick={true}
-                width="100%"
-              />
-            </div>
+            <ScrollableList
+              className="tfvc-label-list"
+              ariaLabel="TFVC labels"
+              itemProvider={labelItemProvider}
+              renderRow={renderLabelRow}
+              onActivate={handleLabelActivated}
+              singleClickActivation
+            />
           )}
         </Card>
       </div>

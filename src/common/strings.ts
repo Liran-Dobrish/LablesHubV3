@@ -19,6 +19,7 @@ export const strings = {
   folderTreeAriaLabel: 'Label folder tree',
   folderTreeExpand: 'Expand',
   folderTreeCollapse: 'Collapse',
+  folderTreeLoading: 'Loading…',
   folderContentsAriaLabel: 'Folder contents',
   folderContentsLoadErrorTitle: 'Unable to load folder contents',
   folderContentsEmpty: 'This folder has no files or sub-folders',

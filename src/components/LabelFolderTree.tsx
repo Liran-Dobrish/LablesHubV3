@@ -1,12 +1,13 @@
 // Folder tree seeded from the label's scope path; lazily loads children on expand — FR-010, US3.
-//
-// Note: azure-devops-ui's Tree/TreeEx is a table-backed component with a more involved
-// column/item-provider contract; this component instead renders a small self-contained
-// recursive tree (using azure-devops-ui/Icon for chevrons/folder icons) to keep the
-// selection/lazy-load logic simple and easy to verify. It can be swapped for the full
-// Tree/TreeEx component later if pixel-parity with other ADO tree UIs is required.
 import * as React from 'react';
-import { Icon } from 'azure-devops-ui/Icon';
+import { Tree, renderTreeRow, renderExpandableTreeCell } from 'azure-devops-ui/TreeEx';
+import type { ITreeColumn, ITreeRow } from 'azure-devops-ui/TreeEx';
+import { TreeItemProvider } from 'azure-devops-ui/Utilities/TreeItemProvider';
+import type { ITreeItem, ITreeItemEx } from 'azure-devops-ui/Utilities/TreeItemProvider';
+import type { IItemProvider } from 'azure-devops-ui/Utilities/Provider';
+import type { IReadonlyObservableValue } from 'azure-devops-ui/Core/Observable';
+import type { ISimpleListCell } from 'azure-devops-ui/List';
+import type { ISimpleTableCell } from 'azure-devops-ui/Table';
 import { tfvcLabelsClient } from '../services/tfvcLabelsClient';
 import type { LabelFolderNode, TfvcLabel } from '../models/types';
 import { leafSegment } from '../common/formatting';
@@ -18,16 +19,39 @@ export interface LabelFolderTreeProps {
   onSelectNode: (path: string) => void;
 }
 
-interface TreeNodeState {
-  node: LabelFolderNode;
-  expanded: boolean;
-  loaded: boolean;
-  children: LabelFolderNode[];
+interface FolderCellData extends ISimpleTableCell {
+  name: ISimpleListCell;
 }
 
+// Placeholder id for the single "loading" child inserted while a folder's real children are fetched.
+const LOADING_PLACEHOLDER_ID = '__loading__';
+
+const columns: ITreeColumn<FolderCellData>[] = [
+  { id: 'name', renderCell: renderExpandableTreeCell, width: -100, hierarchical: true },
+];
+
+function createLoadingPlaceholder(): ITreeItem<FolderCellData> {
+  return { id: LOADING_PLACEHOLDER_ID, data: { name: { text: strings.folderTreeLoading } } };
+}
+
+function buildTreeItem(node: LabelFolderNode): ITreeItem<FolderCellData> {
+  const item: ITreeItem<FolderCellData> = {
+    id: node.path,
+    data: { name: { text: node.name, iconProps: { iconName: 'FabricFolder' } } },
+  };
+  if (node.hasChildren) {
+    item.childItems = [createLoadingPlaceholder()];
+  }
+  return item;
+}
+
+// The tree's itemProvider prop accepts items that may individually be wrapped in an observable;
+// TreeItemProvider never wraps them, so this alias widens the type to satisfy that contract.
+type TreeCellItemProvider = IItemProvider<ITreeItemEx<FolderCellData> | IReadonlyObservableValue<ITreeItemEx<FolderCellData>>>;
+
 export const LabelFolderTree: React.FC<LabelFolderTreeProps> = ({ label, selectedPath, onSelectNode }) => {
-  const [nodes, setNodes] = React.useState<Map<string, TreeNodeState>>(new Map());
-  const [rootPath, setRootPath] = React.useState<string | null>(null);
+  const [treeItemProvider, setTreeItemProvider] = React.useState<TreeItemProvider<FolderCellData> | null>(null);
+  const loadedPaths = React.useRef(new Set<string>());
 
   const loadChildren = React.useCallback(
     async (path: string): Promise<LabelFolderNode[]> => {
@@ -41,115 +65,85 @@ export const LabelFolderTree: React.FC<LabelFolderTreeProps> = ({ label, selecte
 
   React.useEffect(() => {
     let cancelled = false;
+    loadedPaths.current = new Set();
     void (async () => {
       const children = await loadChildren(label.scopePath);
       if (cancelled) {
         return;
       }
-      const rootNode: LabelFolderNode = {
-        path: label.scopePath,
-        name: leafSegment(label.scopePath) || label.scopePath,
-        parentPath: null,
-        hasChildren: children.length > 0,
+      const rootItem: ITreeItem<FolderCellData> = {
+        id: label.scopePath,
+        data: { name: { text: leafSegment(label.scopePath) || label.scopePath, iconProps: { iconName: 'FabricFolder' } } },
+        expanded: true,
+        childItems: children.length > 0 ? children.map(buildTreeItem) : undefined,
       };
-      const initial = new Map<string, TreeNodeState>();
-      initial.set(rootNode.path, { node: rootNode, expanded: true, loaded: true, children });
-      for (const child of children) {
-        initial.set(child.path, { node: child, expanded: false, loaded: false, children: [] });
-      }
-      setNodes(initial);
-      setRootPath(rootNode.path);
+      loadedPaths.current.add(label.scopePath);
+      setTreeItemProvider(new TreeItemProvider<FolderCellData>([rootItem]));
     })();
     return () => {
       cancelled = true;
     };
   }, [label.id, label.scopePath, loadChildren]);
 
-  const toggleExpand = React.useCallback(
-    (path: string) => {
-      setNodes((current) => {
-        const existing = current.get(path);
-        if (!existing) {
-          return current;
-        }
-        const next = new Map(current);
-        next.set(path, { ...existing, expanded: !existing.expanded });
-        return next;
-      });
-
-      const existing = nodes.get(path);
-      if (existing && !existing.loaded) {
+  const handleToggle = React.useCallback(
+    (_event: React.SyntheticEvent<HTMLElement>, treeItem: ITreeItemEx<FolderCellData>) => {
+      if (!treeItemProvider) {
+        return;
+      }
+      const underlyingItem = treeItem.underlyingItem;
+      const path = underlyingItem.id;
+      if (!path) {
+        return;
+      }
+      treeItemProvider.toggle(underlyingItem);
+      if (underlyingItem.expanded && !loadedPaths.current.has(path)) {
+        const placeholder = underlyingItem.childItems?.[0];
         void loadChildren(path).then((children) => {
-          setNodes((current) => {
-            const node = current.get(path);
-            if (!node) {
-              return current;
-            }
-            const next = new Map(current);
-            next.set(path, { ...node, loaded: true, children });
-            for (const child of children) {
-              if (!next.has(child.path)) {
-                next.set(child.path, { node: child, expanded: false, loaded: false, children: [] });
-              }
-            }
-            return next;
-          });
+          loadedPaths.current.add(path);
+          treeItemProvider.splice(underlyingItem, placeholder ? [placeholder] : undefined, [
+            { items: children.map(buildTreeItem) },
+          ]);
         });
       }
     },
-    [nodes, loadChildren]
+    [treeItemProvider, loadChildren]
   );
 
-  const renderNode = (path: string, depth: number): React.ReactNode => {
-    const state = nodes.get(path);
-    if (!state) {
-      return null;
-    }
-    const isSelected = selectedPath === path;
+  const handleSelect = React.useCallback(
+    (_event: React.SyntheticEvent<HTMLElement>, treeRow: ITreeRow<FolderCellData>) => {
+      const path = treeRow.data.underlyingItem.id;
+      if (path) {
+        onSelectNode(path);
+      }
+    },
+    [onSelectNode]
+  );
 
-    return (
-      <div key={path}>
-        <div
-          className={`tfvc-folder-tree-node flex-row flex-center${isSelected ? ' selected' : ''}`}
-          style={{ paddingLeft: depth * 16 }}
-          role="treeitem"
-          aria-selected={isSelected}
-          aria-expanded={state.node.hasChildren ? state.expanded : undefined}
-          tabIndex={0}
-          onClick={() => onSelectNode(path)}
-          onKeyPress={(event) => {
-            if (event.key === 'Enter') {
-              onSelectNode(path);
-            }
-          }}
-        >
-          {state.node.hasChildren ? (
-            <Icon
-              iconName={state.expanded ? 'ChevronDown' : 'ChevronRight'}
-              ariaLabel={state.expanded ? strings.folderTreeCollapse : strings.folderTreeExpand}
-              onClick={(event) => {
-                event.stopPropagation();
-                toggleExpand(path);
-              }}
-            />
-          ) : (
-            <span style={{ width: 16, display: 'inline-block' }} />
-          )}
-          <Icon iconName="FabricFolder" />
-          <span className="body-m">{state.node.name}</span>
-        </div>
-        {state.expanded && state.children.map((child) => renderNode(child.path, depth + 1))}
-      </div>
-    );
-  };
+  const renderRow = React.useCallback(
+    (rowIndex: number, item: ITreeItemEx<FolderCellData>, details: Parameters<typeof renderTreeRow<FolderCellData>>[2]) => {
+      const isSelected = item.underlyingItem.id !== undefined && item.underlyingItem.id === selectedPath;
+      return renderTreeRow(rowIndex, item, details, columns, undefined, isSelected ? 'selected' : undefined, item.underlyingItem.id);
+    },
+    [selectedPath]
+  );
 
-  if (!rootPath) {
+  if (!treeItemProvider) {
     return null;
   }
 
   return (
-    <div className="tfvc-label-folder-tree" role="tree" aria-label={strings.folderTreeAriaLabel}>
-      {renderNode(rootPath, 0)}
-    </div>
+    <Tree<FolderCellData>
+      ariaLabel={strings.folderTreeAriaLabel}
+      className="tfvc-label-folder-tree"
+      columns={columns}
+      itemProvider={treeItemProvider as unknown as TreeCellItemProvider}
+      renderRow={renderRow}
+      onSelect={handleSelect}
+      onActivate={handleSelect}
+      onToggle={handleToggle}
+      showHeader={false}
+      scrollable={false}
+    />
   );
 };
+
