@@ -133,7 +133,6 @@ export const LabelFolderTree: React.FC<LabelFolderTreeProps> = ({ label, selecte
 
   return (
     <Tree<FolderCellData>
-      ariaLabel={strings.folderTreeAriaLabel}
       className="tfvc-label-folder-tree"
       columns={columns}
       itemProvider={treeItemProvider as unknown as TreeCellItemProvider}

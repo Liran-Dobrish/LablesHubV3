@@ -101,7 +101,6 @@ export const LabelListPage: React.FC<LabelListPageProps> = ({ onOpenLabel, initi
               itemProvider={labelItemProvider}
               renderRow={renderLabelRow}
               onActivate={handleLabelActivated}
-              singleClickActivation
             />
           )}
         </Card>
