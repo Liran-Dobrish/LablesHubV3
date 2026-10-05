@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "tfvc-labels-hub",
   "publisher": "lirandobrish",
-  "version": "0.1.12",
+  "version": "0.1.19",
   "name": "TFVC Labels Hub",
   "description": "Browse and inspect TFVC labels for a team project.",
   "public": false,
