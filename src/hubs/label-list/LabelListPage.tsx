@@ -96,11 +96,13 @@ export const LabelListPage: React.FC<LabelListPageProps> = ({ onOpenLabel, initi
 
           {loadState === 'loaded' && visibleLabels.length > 0 && (
             <ScrollableList
-              className="tfvc-label-list"
+              //className="tfvc-label-list"
               ariaLabel="TFVC labels"
               itemProvider={labelItemProvider}
               renderRow={renderLabelRow}
               onActivate={handleLabelActivated}
+              singleClickActivation={true}
+              width="100%"
             />
           )}
         </Card>

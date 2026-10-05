@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { Page } from 'azure-devops-ui/Page';
 import { Header, TitleSize } from 'azure-devops-ui/Header';
-import { Button } from 'azure-devops-ui/Button';
 import { Spinner, SpinnerSize } from 'azure-devops-ui/Spinner';
 import { SingleLayerMasterPanel, SingleLayerMasterPanelHeader } from 'azure-devops-ui/MasterDetails';
 import { tfvcLabelsClient } from '../../services/tfvcLabelsClient';
@@ -12,6 +11,7 @@ import { LabelFolderTree } from '../../components/LabelFolderTree';
 import { LabelFolderContents } from '../../components/LabelFolderContents';
 import { StateMessage } from '../../components/StateMessage';
 import { strings } from '../../common/strings';
+import { Card } from 'azure-devops-ui/Card';
 
 export interface LabelDetailsPageProps {
   labelId: string;
@@ -48,16 +48,11 @@ export const LabelDetailsPage: React.FC<LabelDetailsPageProps> = ({ labelId, onB
 
   return (
     <Page className="tfvc-label-details-page flex-grow">
-      <div className="tfvc-label-details-back-row flex-row flex-center">
-        <Button
-          iconProps={{ iconName: 'Back' }}
-          onClick={onBack}
-          ariaLabel={strings.labelDetailsBackAriaLabel}
-          subtle
-          text={strings.labelDetailsBackButton}
-        />
-      </div>
-      <Header title={label?.name ?? strings.labelDetailsFallbackTitle} titleSize={TitleSize.Large} />
+      <Header
+        title={label?.name ?? strings.labelDetailsFallbackTitle}
+        titleSize={TitleSize.Large}
+        backButtonProps={{ onClick: () => onBack() }}
+      />
 
       {loadState === 'loading' && <Spinner size={SpinnerSize.large} label={strings.labelDetailsLoading} />}
 
@@ -73,23 +68,27 @@ export const LabelDetailsPage: React.FC<LabelDetailsPageProps> = ({ labelId, onB
       )}
 
       {loadState === 'loaded' && label && (
-        <>
+        <div className="page-content page-content-top">
           <section className="tfvc-label-description-section">
-            <LabelDescriptionView description={label.description} />
+            <Card className="flex-grow">
+              <LabelDescriptionView description={label.description} />
+            </Card>
           </section>
-          <section className="tfvc-label-contents-section flex-row">
-            <SingleLayerMasterPanel
-              className="tfvc-label-folder-tree-pane"
-              renderHeader={() => <SingleLayerMasterPanelHeader title={strings.folderTreePanelTitle} />}
-              renderContent={() => (
-                <LabelFolderTree label={label} selectedPath={selectedFolderPath} onSelectNode={setSelectedFolderPath} />
-              )}
-            />
-            <div className="tfvc-label-folder-contents-pane flex-grow">
-              {selectedFolderPath && <LabelFolderContents labelId={label.id} folderPath={selectedFolderPath} />}
-            </div>
-          </section>
-        </>
+          <Card className="flex-grow">
+            <section className="tfvc-label-contents-section flex-row">
+              <SingleLayerMasterPanel
+                className="tfvc-label-folder-tree-pane"
+                renderHeader={() => <SingleLayerMasterPanelHeader title={strings.folderTreePanelTitle} />}
+                renderContent={() => (
+                  <LabelFolderTree label={label} selectedPath={selectedFolderPath} onSelectNode={setSelectedFolderPath} />
+                )}
+              />
+              <div className="tfvc-label-folder-contents-pane flex-grow">
+                {selectedFolderPath && <LabelFolderContents labelId={label.id} folderPath={selectedFolderPath} />}
+              </div>
+            </section>
+          </Card>
+        </div>
       )}
     </Page>
   );
