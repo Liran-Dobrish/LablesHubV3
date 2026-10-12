@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "azure-devops-extension-api": "^5.276.0",
+    "azure-devops-extension-api": "^4.270.0",
     "azure-devops-extension-sdk": "^4.2.0",
     "azure-devops-ui": "^2.280.0",
     "react": "^16.14.0",

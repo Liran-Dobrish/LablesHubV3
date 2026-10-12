@@ -1,11 +1,11 @@
 // Contract test for TfvcLabelsClient — see contracts/tfvc-labels-client.md.
-import { getClient } from 'azure-devops-extension-api';
+import { getClient } from 'azure-devops-extension-api/Common/Client';
 
-jest.mock('azure-devops-extension-api', () => ({
+jest.mock('azure-devops-extension-api/Common/Client', () => ({
   getClient: jest.fn(),
 }));
 
-jest.mock('azure-devops-extension-api/Tfvc', () => ({
+jest.mock('azure-devops-extension-api/Tfvc/TfvcClient', () => ({
   TfvcRestClient: class MockTfvcRestClient {},
 }));
 

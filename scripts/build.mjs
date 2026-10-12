@@ -21,6 +21,7 @@ async function build() {
 
     await esbuild.build({
       entryPoints: [path.join(rootDir, hub.entry)],
+      plugins: [azureDevOpsApiAmdPlugin],
       bundle: true,
       outfile: path.join(outDir, 'index.js'),
       minify: isProd,
@@ -47,6 +48,57 @@ async function build() {
     console.log(`Built ${hub.name} (${mode}) -> ${outDir}`);
   }
 }
+
+const azureDevOpsApiAmdPlugin = {
+  name: 'azure-devops-api-amd',
+  setup(build) {
+    build.onLoad(
+      { filter: /node_modules[\\/]azure-devops-extension-api[\\/].*\.js$/ },
+      async ({ path: filePath }) => {
+        const source = await fs.promises.readFile(filePath, 'utf8');
+        const defineStart = source.indexOf('define(');
+        if (defineStart === -1) {
+          return null;
+        }
+
+        const prefix = source.slice(0, defineStart);
+        const amdModule = source.slice(defineStart);
+        const match = amdModule.match(
+          /^define\((\[[\s\S]*?\]),\s*function\s*\(([^)]*)\)\s*\{([\s\S]*)\}\);\s*$/,
+        );
+        if (!match) {
+          throw new Error(`Unable to process AMD module: ${filePath}`);
+        }
+
+        const dependencies = JSON.parse(match[1]);
+        const parameters = match[2];
+        const argumentsList = dependencies.map((dependency) => {
+          if (dependency === 'require') {
+            return 'require';
+          }
+          if (dependency === 'exports') {
+            return '__amdExports';
+          }
+          if (dependency === 'module') {
+            return '__amdModule';
+          }
+          return `require(${JSON.stringify(dependency)})`;
+        });
+
+        return {
+          contents: `${prefix}
+const __amdExports = {};
+const __amdModule = { exports: __amdExports };
+(function (${parameters}) {${match[3]}
+})(${argumentsList.join(', ')});
+module.exports = __amdModule.exports;
+`,
+          loader: 'js',
+        };
+      },
+    );
+  },
+};
 
 function toPascalCase(kebab) {
   return kebab

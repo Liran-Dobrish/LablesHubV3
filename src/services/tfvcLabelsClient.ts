@@ -1,7 +1,8 @@
 // Implements the TfvcLabelsClient contract — see contracts/tfvc-labels-client.md and research.md §3.
-import { TfvcRestClient, type TfvcItem, type TfvcLabelRequestData } from 'azure-devops-extension-api/Tfvc';
+import { TfvcRestClient } from 'azure-devops-extension-api/Tfvc/TfvcClient';
+import type { TfvcItem, TfvcLabelRequestData } from 'azure-devops-extension-api/Tfvc';
 import * as SDK from 'azure-devops-extension-sdk';
-import * as API from 'azure-devops-extension-api';
+import { getClient } from 'azure-devops-extension-api/Common/Client';
 import type { DataAccessError, LabelItem, TfvcLabel } from '../models/types';
 import { leafSegment, parentPath } from '../common/formatting';
 
@@ -63,7 +64,7 @@ function mapItem(item: TfvcItem): LabelItem {
 }
 
 export class RestTfvcLabelsClient implements TfvcLabelsClient {
-  private readonly client = API.getClient(TfvcRestClient);
+  private readonly client = getClient(TfvcRestClient);
   private readonly itemsCache = new Map<string, LabelItem[]>();
 
   private getScopePath(): string {
